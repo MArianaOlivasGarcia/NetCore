@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "Hash": "c6hql3cF2wakrCF+PdeMVZi7XDlfpD3KldSjkgqxscU=",
+  "Source": "WebApiINMO",
+  "BasePath": "_content/WebApiINMO",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "WebApiINMO\\wwwroot",
+      "Source": "WebApiINMO",
+      "ContentRoot": "C:\\Users\\52998\\source\\repos\\Curso\\WebApiINMO\\WebApiINMO\\wwwroot\\",
+      "BasePath": "_content/WebApiINMO",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "C:\\Users\\52998\\source\\repos\\Curso\\WebApiINMO\\WebApiINMO\\wwwroot\\File 1.txt",
+      "SourceId": "WebApiINMO",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\52998\\source\\repos\\Curso\\WebApiINMO\\WebApiINMO\\wwwroot\\",
+      "BasePath": "_content/WebApiINMO",
+      "RelativePath": "File 1.txt",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\File 1.txt"
+    }
+  ]
+}
