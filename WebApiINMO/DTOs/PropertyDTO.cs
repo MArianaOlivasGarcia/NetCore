@@ -8,6 +8,9 @@ namespace WebApiINMO.DTOs
 
         public string Name { get; set; }
 
+        public string? Description { get; set; }
+
+
         public AdviserDTO Adviser { get; set; }
 
         public List<AmenityDTO> Amenities { get; set; }

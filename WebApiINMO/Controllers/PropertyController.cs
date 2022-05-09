@@ -1,4 +1,7 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApiINMO.DTOs;
@@ -27,6 +30,7 @@ namespace WebApiINMO.Controllers
 
 
         [HttpGet]
+        [Authorize( AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme )]
         public async Task<ActionResult<List<PropertyDTO>>> GetAll()
         {
             var properties = await Context.Properties
@@ -107,7 +111,13 @@ namespace WebApiINMO.Controllers
 
             await Context.SaveChangesAsync();
 
-            var propertyDTO = Mapper.Map<PropertyDTO>(property);
+            var newProperty = await Context.Properties.AsNoTracking()
+                    .Include(p => p.Adviser)
+                    .Include(p => p.PropertyAmenity)
+                    .ThenInclude(pa => pa.Amenity)
+                    .FirstAsync(p => p.Id == property.Id);
+
+            var propertyDTO = Mapper.Map<PropertyDTO>(newProperty);
 
 
             //return Ok();
@@ -117,6 +127,66 @@ namespace WebApiINMO.Controllers
 
         }
 
+
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult> Update(int id, PropertyCreateDTO propertyCreateDTO)
+        {
+            var adviserdb = await Context.Properties
+                    .Include(x => x.PropertyAmenity)
+                    .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (adviserdb == null)
+            {
+                return NotFound();
+            }
+
+            // "Llevar las propiedades de propertyCreateDTO hacia adviserdb"
+            // y asigno el resultado en la misma instancia adviserdb
+            adviserdb = Mapper.Map(propertyCreateDTO, adviserdb);
+
+            await Context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+
+
+        [HttpPatch("{id:int}")]
+        public async Task<ActionResult> Patch(int id, JsonPatchDocument<PropertyPatchDTO> patchDocument)
+        {
+
+            if ( patchDocument == null)
+            {
+                return BadRequest();
+            }
+
+            var propertydb = await Context.Properties.FirstOrDefaultAsync(x => x.Id == id);
+
+            if ( propertydb == null )
+            {
+                return NotFound();
+            }
+
+            var propertyDTO = Mapper.Map<PropertyPatchDTO>(propertydb);
+
+            // Llenando el pachDocument con la información del libro de la base de datos
+            patchDocument.ApplyTo(propertyDTO, ModelState);
+
+            // Verificar las reglas de validación 
+            var isValid = TryValidateModel(propertyDTO);
+
+            if ( !isValid )
+            {
+                return BadRequest(ModelState);
+            }
+
+            Mapper.Map(propertyDTO, propertydb);
+
+            await Context.SaveChangesAsync();
+
+            return NoContent();
+
+        }
 
 
 

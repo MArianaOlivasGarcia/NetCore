@@ -2,17 +2,13 @@
 
 namespace WebApiINMO.DTOs
 {
-    public class PropertyCreateDTO
+    public class PropertyPatchDTO
     {
 
         [Required(ErrorMessage = "El {0} es requerido.")]
         [StringLength(maximumLength: 400, ErrorMessage = "El {0} no debe tener más de {1} carácteres.")]
         public string Name { get; set; }
-        public string? Description { get; set; }
-
-        public int AdviserId { get; set; }
-        public List<int> AmenitiesIds { get; set; }
-
+        public string Description { get; set; }
 
     }
 }

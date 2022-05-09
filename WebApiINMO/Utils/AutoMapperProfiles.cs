@@ -18,8 +18,7 @@ namespace WebApiINMO.Utils
                 .ForMember(property => property.PropertyAmenity, opt => opt.MapFrom( MapPropertiesAmenities ));
             CreateMap<Property, PropertyDTO>()
                 .ForMember(property => property.Amenities, opt => opt.MapFrom( MapPropertyDTOAmenities));
-
-
+            CreateMap<PropertyPatchDTO, Property>().ReverseMap();
 
             CreateMap<AmenityCreateDTO, Amenity>();
             CreateMap<Amenity, AmenityDTO>();

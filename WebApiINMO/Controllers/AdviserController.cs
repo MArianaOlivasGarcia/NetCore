@@ -17,12 +17,14 @@ namespace WebApiINMO.Controllers
 
         private readonly ApplicationDbContext Context;
         private readonly IMapper Mapper;
+        private readonly IConfiguration Configuration;
 
 
-        public AdviserController(ApplicationDbContext context, IMapper mapper)
+        public AdviserController(ApplicationDbContext context, IMapper mapper, IConfiguration configuration)
         {
             Context = context;
             Mapper = mapper;
+            Configuration = configuration;
         }
 
 
@@ -55,6 +57,14 @@ namespace WebApiINMO.Controllers
         }
 
 
+        [HttpGet("config")]
+        public ActionResult<string> GetConfiguration()
+        {
+            //return Configuration["Lastname"];
+            return Configuration["ConnectionStrings:DefaultConnection"];
+        }
+
+
 
         [HttpPost]
         //[Authorize]
@@ -84,13 +94,9 @@ namespace WebApiINMO.Controllers
 
 
         [HttpPut("{id:int}")]
-        public async Task<ActionResult> Update(Adviser adviser, int id)
+        public async Task<ActionResult> Update(AdviserCreateDTO adviserCreateDTO, int id)
         {
-            if (adviser.Id != id)
-            {
-                return BadRequest("El Id no coincide con el Id del asesor");
-            }
-
+          
             var exist = await Context.Advisers.AnyAsync(x => x.Id == id);
 
             if (!exist)
@@ -98,9 +104,14 @@ namespace WebApiINMO.Controllers
                 return NotFound();
             }
 
+            var adviser = Mapper.Map<Adviser>(adviserCreateDTO);
+            adviser.Id = id;
+
             Context.Update(adviser);
+
             await Context.SaveChangesAsync();
-            return Ok();
+
+            return NoContent();
         }
 
 
@@ -119,7 +130,7 @@ namespace WebApiINMO.Controllers
 
             Context.Remove(new Adviser() { Id = id });
             await Context.SaveChangesAsync();
-            return Ok();
+            return NoContent();
         }
 
 
