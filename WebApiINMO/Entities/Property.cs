@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace WebApiINMO.Entities
 {
@@ -10,10 +11,13 @@ namespace WebApiINMO.Entities
         public string Name { get; set; }
         public string? Description { get; set; }
         public int AdviserId { get; set; }
+        public string UserId { get; set; }
 
         //Propiedades de navegacín
         public Adviser Adviser { get; set; }
         public List<PropertyAmenity> PropertyAmenity { get; set; }
+        public IdentityUser User { get; set; }
+
 
     }
 }

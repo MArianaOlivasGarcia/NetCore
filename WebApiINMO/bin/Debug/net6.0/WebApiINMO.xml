@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>WebApiINMO</name>
+    </assembly>
+    <members>
+        <member name="M:WebApiINMO.Controllers.v1.PropertyController.Delete(System.Int32)">
+            <summary>
+            Eliminar Propiedad
+            </summary>
+            <param name="id">Eliminar una propiedad por su ID</param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

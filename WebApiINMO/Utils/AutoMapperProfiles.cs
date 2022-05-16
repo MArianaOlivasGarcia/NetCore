@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using WebApiINMO.DTOs;
 using WebApiINMO.Entities;
 
@@ -22,6 +23,10 @@ namespace WebApiINMO.Utils
 
             CreateMap<AmenityCreateDTO, Amenity>();
             CreateMap<Amenity, AmenityDTO>();
+
+
+            CreateMap<IdentityUser, UserDTO>();
+
 
 
 

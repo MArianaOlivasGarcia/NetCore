@@ -2,17 +2,14 @@
 
 namespace WebApiINMO.DTOs
 {
-    public class UserCredentialsDTO
+    public class AddRoleDTO
     {
         [Required]
         [EmailAddress]
         public string Email { get; set; }
 
-        //[Required]
-        //public string UserName { get; set; }
-
-        [Required]
-        public string Password { get; set; }
-
+        [Required] 
+        // TODO: Validar que sea ADMIN o USER en mayuscula
+        public string Role { get; set; }
     }
 }

@@ -6,10 +6,10 @@ using WebApiINMO.DTOs;
 using WebApiINMO.Entities;
 using WebApiINMO.Filters;
 
-namespace WebApiINMO.Controllers
+namespace WebApiINMO.Controllers.v1
 {
     [ApiController]
-    [Route("api/advisers")]
+    [Route("api/v1/advisers")]
     // [Authorize]
     public class AdviserController: ControllerBase
     {
@@ -29,7 +29,7 @@ namespace WebApiINMO.Controllers
 
 
 
-        [HttpGet]
+        [HttpGet(Name = "getAllAdvisersV1")]
         [ResponseCache(Duration = 10)]
         //[ServiceFilter(typeof(MyActionFilter))]
         public async Task<ActionResult<List<AdviserDTO>>> GetAll()
@@ -40,7 +40,7 @@ namespace WebApiINMO.Controllers
         }
 
 
-        [HttpGet("{id:int}", Name = "GetAdviserById")]
+        [HttpGet("{id:int}", Name = "getAdviserByIdV1")]
         public async Task<ActionResult<AdviserDTO>> GetById(int id)
         {
             var adviser = await Context.Advisers
@@ -57,7 +57,7 @@ namespace WebApiINMO.Controllers
         }
 
 
-        [HttpGet("config")]
+        [HttpGet("configV1")]
         public ActionResult<string> GetConfiguration()
         {
             //return Configuration["Lastname"];
@@ -66,7 +66,7 @@ namespace WebApiINMO.Controllers
 
 
 
-        [HttpPost]
+        [HttpPost(Name = "createAdviserV1")]
         //[Authorize]
         public async Task<ActionResult> Create([FromBody] AdviserCreateDTO adviserCreateDTO)
         {
@@ -87,13 +87,13 @@ namespace WebApiINMO.Controllers
             var adviserDTO = Mapper.Map<AdviserDTO>(adviser);
 
             // El nombre de la ruta y necesito mandarle el Id
-            return CreatedAtRoute("GetAdviserById", new { id = adviser.Id }, adviserDTO);
+            return CreatedAtRoute("getAdviserByIdV1", new { id = adviser.Id }, adviserDTO);
         }
 
 
 
 
-        [HttpPut("{id:int}")]
+        [HttpPut("{id:int}", Name = "updateAdviserV1")]
         public async Task<ActionResult> Update(AdviserCreateDTO adviserCreateDTO, int id)
         {
           
@@ -117,7 +117,7 @@ namespace WebApiINMO.Controllers
 
 
 
-        [HttpDelete("{id:int}")]
+        [HttpDelete("{id:int}", Name = "deleteAdviserV1")]
         public async Task<ActionResult> Delete(int id)
         {
 

@@ -1,14 +1,20 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.IdentityModel.Tokens.Jwt;
+using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
 using WebApiINMO.Filters;
 using WebApiINMO.Middlewares;
 using WebApiINMO.Services;
+using WebApiINMO.Utils;
 
+[assembly: ApiConventionType(typeof(DefaultApiConventions))]
 namespace WebApiINMO
 {
     public class Startup
@@ -16,6 +22,9 @@ namespace WebApiINMO
 
         public Startup( IConfiguration configuration )
         {
+
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
             Configuration = configuration;
         }
 
@@ -27,6 +36,8 @@ namespace WebApiINMO
             services.AddControllers( options =>
             {
                 options.Filters.Add(typeof(ExceptionFilter));
+                // Añadir mi util de swagger para agrupar por versión
+                options.Conventions.Add(new SwaggerByVersion());
             }).AddJsonOptions( options => 
                     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles )
             .AddNewtonsoftJson();
@@ -38,7 +49,7 @@ namespace WebApiINMO
             services.AddTransient<MyActionFilter>();
 
 
-            services.AddHostedService<WritingFile>();
+            //services.AddHostedService<WritingFile>();
 
 
             services.AddResponseCaching();
@@ -60,6 +71,21 @@ namespace WebApiINMO
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(c =>
             {
+
+                c.SwaggerDoc("v1", new OpenApiInfo { 
+                    Title = "WebApiINMO", 
+                    Version = "v1",
+                    Description = "Esta es una Web API de Inmobiliarias",
+                    Contact = new OpenApiContact
+                    {
+                        Email = "olivasgarcia031096@gmail.com",
+                        Name = "MAriana Olivas",
+                        Url = new Uri("http://marianaolivas.com")
+                    }
+                });
+                c.SwaggerDoc("v2", new OpenApiInfo { Title = "WebApiINMO", Version = "v2" });
+
+                c.OperationFilter<AddParamsHATEOAS>();
 
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
@@ -85,6 +111,12 @@ namespace WebApiINMO
                     }
                 });
 
+
+
+                var fileXML = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var pathXML = Path.Combine(AppContext.BaseDirectory, fileXML);
+                c.IncludeXmlComments(pathXML);
+
             });
 
 
@@ -94,6 +126,40 @@ namespace WebApiINMO
             services.AddIdentity<IdentityUser, IdentityRole>()
                     .AddEntityFrameworkStores<ApplicationDbContext>()
                     .AddDefaultTokenProviders();
+
+
+
+            // Autenticación basada en Claims
+            services.AddAuthorization(options =>
+           {
+               options.AddPolicy("ADMIN", policy => policy.RequireClaim("ADMIN"));
+               options.AddPolicy("USER", policy => policy.RequireClaim("USER"));
+           });
+
+            services.AddCors(options =>
+           {
+               options.AddDefaultPolicy(builder =>
+              {
+                  builder.WithOrigins("https://www.apirequest.io")
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .WithExposedHeaders( new string[] { "totalResults"  });
+              });
+           });
+
+
+            // Servicio de protección de datos
+            services.AddDataProtection();
+
+            // Nuestro servicio de hash que creamos
+            services.AddTransient<HashService>();
+
+
+
+            services.AddTransient<GeneratorUrls>();
+            services.AddTransient<HATEOASPRopertyFilterAttribute>();
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+
         }
 
 
@@ -108,18 +174,24 @@ namespace WebApiINMO
             //{
             //  await context.Response.WriteAsync("Estoy interceptando la tubería");
             //});
-                
+
 
             // Configure the HTTP request pipeline.
-            if ( env.IsDevelopment())
+            if (env.IsDevelopment())
             {
                 app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebApiINMO v1");
+                    c.SwaggerEndpoint("/swagger/v2/swagger.json", "WebApiINMO v2");
+                });
             }
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseResponseCaching();
 

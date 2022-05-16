@@ -72,3 +72,5 @@ C:\Users\52998\source\repos\Curso\WebApiINMO\WebApiINMO\bin\Debug\net6.0\Microso
 C:\Users\52998\source\repos\Curso\WebApiINMO\WebApiINMO\bin\Debug\net6.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
 C:\Users\52998\source\repos\Curso\WebApiINMO\WebApiINMO\bin\Debug\net6.0\Microsoft.Extensions.Identity.Core.dll
 C:\Users\52998\source\repos\Curso\WebApiINMO\WebApiINMO\bin\Debug\net6.0\Microsoft.Extensions.Identity.Stores.dll
+C:\Users\52998\source\repos\Curso\WebApiINMO\WebApiINMO\bin\Debug\net6.0\WebApiINMO.xml
+C:\Users\52998\source\repos\Curso\WebApiINMO\WebApiINMO\obj\Debug\net6.0\WebApiINMO.xml

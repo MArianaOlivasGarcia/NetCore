@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using WebApiINMO.DTOs;
 using WebApiINMO.Entities;
 
-namespace WebApiINMO.Controllers
+namespace WebApiINMO.Controllers.v1
 {
     [ApiController]
-    [Route("api/amenities")]
+    [Route("api/v1/amenities")]
     public class AmenityController: ControllerBase
     {
 
@@ -22,7 +22,7 @@ namespace WebApiINMO.Controllers
         }
 
 
-        [HttpGet]
+        [HttpGet(Name = "getAllAmenities")]
         public async Task<ActionResult<List<AmenityDTO>>> GetAll()
         {
             var amenities = await Context.Amenities.ToListAsync();
@@ -32,7 +32,7 @@ namespace WebApiINMO.Controllers
 
 
 
-        [HttpPost]
+        [HttpPost(Name = "createAmenity")]
         public async Task<ActionResult> Create(AmenityCreateDTO amenityDTO)
         {
             var amenity = Mapper.Map<Amenity>(amenityDTO);
